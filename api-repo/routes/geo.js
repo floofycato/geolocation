@@ -58,4 +58,21 @@ router.get("/:ip", auth, async (req, res) => {
   }
 })
 
+// Delete multiple search history entries
+router.post("/history/delete-multiple", auth, async (req, res) => {
+  try {
+    console.log("Request body:", req.body) // Debug log
+    const { ids } = req.body
+    if (!ids || ids.length === 0) {
+      return res.status(400).json({ message: "No IDs provided" })
+    }
+
+    await SearchHistory.deleteMany({ _id: { $in: ids } })
+    res.json({ message: "Selected histories deleted successfully" })
+  } catch (error) {
+    console.error("Error deleting multiple histories:", error.message)
+    res.status(500).json({ error: error.message })
+  }
+})
+
 export default router
